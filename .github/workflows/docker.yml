@@ -1,0 +1,37 @@
+
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build Dockerfile jenkinsfile-runner
+        run: docker build -t highb/jenkinsfile-runner .
+
+      - name: Build Dockerfile jenkinsfile-runner-lazyload
+        run: docker build -f jenkinsfile-runner-lazyloaded/Dockerfile -t highb/jenkinsfile-runner-lazyload .
+
+      - name: Build Dockerfile jenkinsfile-runner-prepackaged
+        run: docker build -f jenkinsfile-runner-prepackaged/Dockerfile -t highb/jenkinsfile-runner-prepackaged .
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run Jenkinsfile in runner
+      - name: Run Jenkinsfile in runner
+        run: docker run -it highb/jenkinsfile-runner-prepackaged -v $(PWD):/github/workspace
+        working-directory: test
